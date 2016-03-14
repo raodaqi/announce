@@ -130,7 +130,7 @@ function getUrlData(url,charset,callback){
 					// var str = iconv.decode(buf, 'GBK');
 					// var str = iconv.decode(buf, 'UTF-8');
 					console.log(source);
-					
+
 					if(!charset){
 						charset = "GBK";
 					}
@@ -185,7 +185,7 @@ function getJWCImportentData(){
 }
 function getCUITImportentData(){
 	console.log("测试");
-	getUrlData("http://www.cuit.edu.cn/NewsList?id=2","UTF-8",{
+	getUrlData("http://www.cuit.edu.cn/NewsList.aspx?id=2","UTF-8",{
 		success:function(result){
 			$ = cheerio.load(result);
 			console.log(result);
