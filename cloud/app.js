@@ -129,6 +129,7 @@ function getUrlData(url,charset,callback){
 					var buf = new Buffer(source, 'binary');
 					// var str = iconv.decode(buf, 'GBK');
 					// var str = iconv.decode(buf, 'UTF-8');
+					console.log(source);
 					if(!charset){
 						charset = "GBK";
 					}
