@@ -1,0 +1,19 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AV	D:\Zend\workspaces\announcement\cloud\app.js	/^var AV = require('leanengine');$/;"	variable	line:2
+express	D:\Zend\workspaces\announcement\cloud\app.js	/^var express = require('express');$/;"	variable	line:5
+app	D:\Zend\workspaces\announcement\cloud\app.js	/^var app = express();$/;"	variable	line:6
+path	D:\Zend\workspaces\announcement\cloud\app.js	/^var path = require('path');$/;"	variable	line:7
+schedule	D:\Zend\workspaces\announcement\cloud\app.js	/^var schedule = require("node-schedule");$/;"	variable	line:8
+http	D:\Zend\workspaces\announcement\cloud\app.js	/^var http =  require('http');$/;"	variable	line:9
+cheerio	D:\Zend\workspaces\announcement\cloud\app.js	/^var cheerio = require('cheerio');$/;"	variable	line:10
+APP_ID	D:\Zend\workspaces\announcement\cloud\app.js	/^var APP_ID = 'H3uzSTIRP8OPpXNE7qxCrhf1-gzGzoHsz'; \/\/ 你的 app id$/;"	variable	line:12
+APP_KEY	D:\Zend\workspaces\announcement\cloud\app.js	/^var APP_KEY =  'AbBvTAexCid6dIJS2LoH0Ytp'; \/\/ 你的 app key$/;"	variable	line:13
+MASTER_KEY	D:\Zend\workspaces\announcement\cloud\app.js	/^var MASTER_KEY =  'q7VGCifyLCEU1MLFaE7A9mYK'; \/\/ 你的 master key$/;"	variable	line:14
+url	D:\Zend\workspaces\announcement\cloud\app.js	/^var url = "http:\/\/www1.cuit.edu.cn\/NewsList.asp?bm=32&type=448";$/;"	variable	line:39
+success	D:\Zend\workspaces\announcement\cloud\app.js	/^	  success: function(httpResponse) {$/;"	function	line:61
+error	D:\Zend\workspaces\announcement\cloud\app.js	/^	  error: function(httpResponse) {$/;"	function	line:64

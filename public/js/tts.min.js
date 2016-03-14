@@ -1,0 +1,317 @@
+/*
+ author:cyhu(viskey.hu@gmail.com) 2015.4.14
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the distribution.
+
+ 3. The names of the authors may not be used to endorse or promote products
+ derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL JCRAFT,
+ INC. OR ANY CONTRIBUTORS TO THIS SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+ 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var brower_info                     =     {
+                                              "sys"      :    null,
+	                                          "type"     :    null,
+	                                          "link"     :    null
+                                          };
+/* */
+var print_log                       =     true;
+
+var socket_url                      =     'http://webapi.openspeech.cn:80/ivp';
+var reconnection                    =     false;
+var reconnection_delay              =     999999;
+var force_new_connection            =     true;
+var buffer_length                   =     0;
+var tts_params_obj                  =     null;
+this.node                           =     null;
+var tts_session_id                  =     null;
+var tts_text_ready                  =     null;
+var func_on_tts_process             =     null;
+var func_on_tts_result              =     null;
+var browser_id                      =     new Fingerprint().get();
+var tts_syn_state                   =     'idle';
+
+var KEY_CONNECT                     =     'connect';
+var KEY_DISCONNECT                  =     'disconnect';
+var SESSION_DISCONNECT              =     'session_disconnect';
+var KEY_QTTS_SESSION_BEGIN          =     'qttssessionbegin';
+var	KEY_QTTS_TEXT_PUT               =     'qttstextput';
+var	KEY_QTTS_AUDIO_GET              =     'qttsaudioget';
+var	KEY_QTTS_AUDIO_INFO             =     'qttsaudioinfo';
+var KEY_QTTS_SESSION_END            =     'qttssessionend';
+var INTERVAL_GET_RESULT             =      100;
+
+var ua = navigator.userAgent.toLowerCase();
+if(((/msie/.test(ua) && !/opera/.test(ua)) || ((/msie/.test(ua)||/trident/.test(ua)) && !/opera/.test(ua))))
+  brower_info.type = 'ie';
+else if(ua.match(/firefox\/([\d.]+)/))
+  brower_info.type = 'firefox';
+else if(ua.match(/chrome\/([\d.]+)/))
+  brower_info.type = 'chrome';
+else if(ua.match(/opera.([\d.]+)/))
+  brower_info.type = 'opera';
+else if(ua.match(/version\/([\d.]+).*safari/))
+  brower_info.type = 'safari';
+else 
+  brower_info.type = 'other';
+  
+if(!!ua.match(/AppleWebKit.*Mobile.*/)||!!ua.match(/AppleWebKit/))
+  brower_info.sys = 'mobile';
+else if(!!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/))
+  brower_info.sys = 'ios';
+else if(ua.indexOf('Android') > -1 || ua.indexOf('Linux') > -1)
+  brower_info.sys = 'android';
+else if(ua.indexOf('iPhone') > -1 || ua.indexOf('Mac') > -1)
+  brower_info.sys = 'iPhone';
+else if(ua.indexOf('iPad') > -1)
+  brower_info.sys = 'iPad';
+else if(navigator.userAgent.indexOf('MicroMessenger') > -1)
+  brower_info.sys = 'Weixin';
+else 
+  brower_info.sys = 'other';
+
+//if(brower_info.type == 'ie' || ((brower_info.type == 'chrome' || brower_info.type == 'opera') &&  brower_info.sys != 'other'))
+//{
+  brower_info.link = 'mp3';
+//}else if(brower_info.sys == 'Weixin'){
+  //brower_info.link = 'mp3';
+//}
+
+function register_connection_listener()
+{
+    window.socket.on(KEY_CONNECT, function(data) 
+	{
+		LOGCAT("connected to server ...");
+	});
+
+	window.socket.on(SESSION_DISCONNECT, function()
+	{
+		window.socket.disconnect();
+		releaseStream();
+		LOGCAT("client disconnect ...");
+	});	
+}
+
+function LOGCAT(str)
+{
+    if(print_log) console.log('[' + getCurrentTime() + ']  ' + str);
+}
+
+function getCurrentTime()
+{ 
+    var now = new Date();      
+    var year = now.getFullYear();      
+    var month = now.getMonth() + 1;    
+    var day = now.getDate();           
+    var hh = now.getHours();          
+    var mm = now.getMinutes();          
+       
+    var clock = year + "-";      
+    if(month < 10)
+        clock += "0";
+    clock += month + "-";       
+    if(day < 10)
+        clock += "0";           
+    clock += day + " ";   
+    if(hh < 10)
+        clock += "0";       
+    clock += hh + ":";
+    if (mm < 10) 
+	    clock += '0'; 
+	clock += mm; 
+    return(clock); 
+}
+
+sendMessage = function(filter, message){
+	window.socket.emit(filter, message);
+};
+
+function initTtsParams(cfg)
+{
+    if( cfg.url != undefined && cfg.url.indexOf("webapi.openspeech.cn") <= 0) 
+    {
+		/////�����ϰ汾��֧����http://xxx.xxx.xxx:80/ivp�����ķ�ʽ
+		if(cfg.url.indexOf("ivp") > 0 )
+		{
+			socket_url = cfg.url.replace(/ivp/, "");
+		} else {
+			socket_url = cfg.url;
+		}
+    } else {
+	    socket_url = 'http://webapi.openspeech.cn:80/';
+    }
+	
+    //if( cfg.writeAudio != undefined && cfg.writeAudio != null ) window.waflag = cfg.writeAudio;
+    if( cfg.reconnection != undefined && cfg.reconnection != null ) reconnection = cfg.reconnection;
+    if( cfg.reconnection_delay != undefined && cfg.reconnection_delay != null ) reconnection_delay = cfg.reconnectionDelay;
+}
+
+function IFlyTtsSession(cfg){
+    initTtsParams(cfg);
+
+	/*
+	 * start a speech synthesize session, schedule: start->send text -> return audio url
+	 * ->on end -> next session
+	 * @params         parameters for synthesize
+	 * @content        content for synthesize
+	 * @funcOnResult   on volume listener
+	 * @funcOnProcess  on process
+	 */
+	this.start = function(params, content, funcOnResult, funcOnProcess)
+	{	
+	    iflytek_tts_start(params, content, funcOnResult, funcOnProcess);
+	}
+
+	/*
+	 * stop synthsize session
+	 */
+	this.stop = function()
+	{
+		tts_audio_get(0);
+	}
+
+	/*
+	 * cancel synthsize session
+	 */
+	this.cancel = function()
+	{
+		iflytek_tts_cancel();
+	}
+}
+
+function iflytek_tts_start(params, content, funcOnResult, funcOnProcess)
+{
+    if( arguments.length < 3 )
+	{
+	   LOGCAT("INPUT PARAMETERS ERROR");
+	   return -1;
+	} 
+
+	if(funcOnProcess != undefined) func_on_tts_process = funcOnProcess;
+	func_on_tts_result = funcOnResult;
+
+	window.socket = io.connect(socket_url,  { 'reconnection' : reconnection,
+		'reconnectionDelay' : reconnection_delay, 'force new connection' : true });
+	register_connection_listener();
+	register_tts_listener();
+
+	tts_params_obj = params;
+	tts_params_obj.params = tts_params_obj.params + ",browser_id=" + browser_id + ",host=" + document.domain + ",browser_sys="
+		+ brower_info.sys + ",browser_type=" + brower_info.type;
+	tts_text_ready = content;
+	console.log(content);
+	sendMessage(KEY_QTTS_SESSION_BEGIN, tts_params_obj);
+
+	tts_syn_state = 'ssb';
+}
+
+function iflytek_tts_cancel()
+{
+	tts_session_end();
+}
+
+function tts_text_put()
+{
+	if (tts_text_ready != null && tts_text_ready.length > 0)
+	{
+		var message = {"sessionid": tts_session_id, "text": tts_text_ready};
+		sendMessage(KEY_QTTS_TEXT_PUT, message);
+	}
+}
+
+/**
+ * get audio from server
+ * varible : wait_time, call getresult function after wait_time.
+ * varible : func
+ */
+function tts_audio_get(wait_time)
+{
+	setTimeout('sendMessage(KEY_QTTS_AUDIO_GET, {"sessionid" : tts_session_id, "gat" : "mp3"})', wait_time);
+}
+
+/**
+ * session end, close the session
+ * varible : wait_time, call sessionend function after wait_time.
+ */
+function tts_session_end(wait_time)
+{
+	LOGCAT('synthesize_state : ' + tts_syn_state + ', session_id : ' + tts_session_id);
+	tts_syn_state = 'sse';
+	if(tts_session_id != null)
+	{
+		if(arguments.length == 0)
+		{
+			sendMessage(KEY_QTTS_SESSION_END, {"sessionid" : tts_session_id});
+		} else
+		{
+			setTimeout('sendMessage(KEY_QTTS_SESSION_END, {"sessionid" : tts_session_id})', wait_time);
+		}
+	}
+}
+
+function register_tts_listener()
+{   
+    window.socket.on(KEY_QTTS_SESSION_BEGIN, function(obj) {
+		var ret = obj.ret;
+		if(ret == 0)
+		{
+			tts_session_id = obj.sessionid;
+			LOGCAT("get session begin return : " + ret + ", sessionid : " + tts_session_id);
+			tts_text_put();
+		}
+	});
+
+	window.socket.on(KEY_QTTS_TEXT_PUT, function(ret) {
+		LOGCAT("tts text put return : " + ret.ret);
+		if( ret.ret == 0)
+			tts_audio_get(INTERVAL_GET_RESULT);
+		else
+		{
+			tts_session_end(50);
+		}
+	});
+
+	window.socket.on(KEY_QTTS_AUDIO_GET, function(obj) {
+		var err_code = obj.err_code;
+		var synth_status = obj.synth_status;
+		var audio_url = obj.audio_url;
+		var duration = obj.duration;
+
+		if(err_code != 0)
+		{
+			tts_session_end(0);
+		} else if(synth_status == 2)
+		{
+			if(audio_url != undefined)
+				//func_on_tts_result(err_code, {"audio_url" : audio_url});
+			    func_on_tts_result(err_code, {"audio_url" : audio_url, "duration" : duration});
+			tts_session_end(0);
+		} else {
+			tts_audio_get(INTERVAL_GET_RESULT);
+		}
+	});	
+
+	window.socket.on(KEY_QTTS_SESSION_END, function(obj) {
+		LOGCAT("session end ,return value : " + obj);
+		tts_session_id = null;
+        if(func_on_tts_process != undefined) func_on_tts_process('onEnd');
+	});
+}

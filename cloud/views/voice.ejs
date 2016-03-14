@@ -1,0 +1,266 @@
+<% include header.ejs %>
+<style type="text/css">
+	body,html{
+		margin: 0;
+		padding:0;
+		height: 100%;
+		overflow: hidden !important;
+		background-color: white;
+	}
+	.content{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		bottom:0;
+		left: 0;
+		right:0;
+		background-color: #F58180;
+		overflow: hidden;
+	}
+	.text-content{
+		display: block;
+		border:0;
+		height: 100px;
+		font-size: 18px;
+		width: 100%;
+		position: absolute;
+		text-align: center;
+		top:50%;
+		margin: 0px;
+		margin-top: -100px;
+	}
+	.arrow{
+		background-image: url("./img/arrow.svg");
+		position:absolute;
+		width: 40px;
+		height:40px;
+		bottom:30px;
+		right:20px;
+	}
+	/****************反馈ui*******************/
+	.error-tip{
+		width: 80%;
+		color:white;
+		margin:40px auto;
+	}
+	.thanks-tip{
+		width: 80%;
+		text-align: center;
+		color:white;
+		margin:40% auto;
+	}
+	.error-input{
+		display: block;
+		border: 0;
+		border-radius: 4px;
+		width: 80%;
+		padding:10px 10px;
+		margin: 0 auto;
+	}
+	.submit-button{
+		width: 60%;
+		padding:12px;
+		color: white;
+		margin: 50px auto;
+		text-align: center;
+		border-radius: 5px;
+		background-color: #5287E8;
+	}
+	#share-tip-dialog{
+		background: rgba(0, 0, 0, 0.8);
+	}
+	.share-tip-content{
+		width: 80%;
+		text-align: center;
+		color:white;
+		margin:40% auto;
+	}
+	.big{
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.small{
+		font-size: 10px;
+		color:#30B7F7;
+	}
+	.play-content{
+		width: 80px;
+		height: 80px;
+		margin:0 auto;
+		margin-top: 50px;
+		box-shadow: 0px 0px 20px #D8D8D8;
+    	border-radius: 10px;
+    	text-align: center;
+	}
+	.play,.stop{
+		width: 50px;
+		height: 50px;
+		margin:0 auto;
+		font-size: 40px;
+		color: white;
+		line-height: 80px;
+		text-align: center;
+	}
+	.play-active{
+		display: block;
+	}
+	.do{
+		position: fixed;
+		height: 50px;
+		color: white;
+		bottom: 0;
+		width: 100%;
+		line-height: 50px;
+		text-align: center;
+	}
+	.do{
+	    background: -moz-linear-gradient(top, #DB5957 0%, #EEA068 100%);
+	    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#DB5957), color-stop(100%,#EEA068));
+	    background: -webkit-linear-gradient(top, #DB5957 0%,#EEA068 100%);
+	    background: -o-linear-gradient(top, #DB5957 0%,#EEA068 100%);
+	    background: -ms-linear-gradient(top, #DB5957 0%,#EEA068 100%);
+	    background: linear-gradient(to bottom, #DB5957  0%,#EEA068  100%);
+	    opacity: 0.9;
+	}
+	.content{
+		background: url("/img/3-6-1.jpg");
+		background-size: cover;
+	}
+</style>
+<body>
+	<!-- <textarea class="text-content" placeholder="输入一段你想说的话..."></textarea>  -->
+	<div class="content">
+		<!-- <input type="text" class="text-content" placeholder="输入一段你想说的话..."> -->
+		<!-- <textarea class="text-content" placeholder="输入一段你想说的话..."></textarea>
+
+		<div class="arrow"></div> -->
+		<div class="error-content">
+			<div class="play-content">
+				<div class="play iconfont icon-bofangqibofang"></div>
+				<div class="stop iconfont icon-zanting" style="display: none"></div>
+			</div>
+
+			<div class="error-tip">
+				如果您的手机听不到声音，麻烦您填一下您的手机机型反馈给我们，谢谢。
+			</div>
+			<!-- <input class="error-input" placeholder="输入您的手机机型" type="text" > -->
+
+			<div class="submit-button">提交</div>
+		</div>
+		<div class="thanks-content" style="display:none">
+			<div class="thanks-tip">
+				我们已经收到您的反馈，谢谢。
+			</div>
+		</div>
+	</div>
+
+	<a href="/"><div class="do">我也要去说</div></a>
+
+	<div class="ui-dialog" id="share-tip-dialog">
+	    <div class="share-tip-content">
+	    	<p class="big">请使用自带的分享功能分享</p>
+	    	<p class="small">通常分享按钮会在右上方或正下方</p>
+	    </div>
+	</div>
+
+	<!-- <audio src="" class="audio" id="audio" style="display:none">
+		您的浏览器不支持 audio 标签。
+	</audio> -->
+
+<% include footer.ejs %>
+
+	<script type="text/javascript">
+		var content = '<%= content %>';
+		var vcn = '<%= vcn %>';
+		var voice = '';
+		console.log("content:"+content+"   vcn:"+vcn);
+
+		console.log(window.history);
+
+		if(window.history.length > 2){
+			$("#share-tip-dialog").show();
+		}
+		cherry.play(content,vcn,{
+			success:function(audio){
+				voice = audio;
+			},
+			error:function(){
+
+			}
+		});
+
+		$(".play").on("click",function(){
+			$(".play-content div").show();
+			$(this).hide();
+			if(!voice)
+            {
+				cherry.play(content,vcn,{
+					success:function(audio){
+						voice = audio;
+					},
+					error:function(){
+
+					}
+				});
+			}else{
+				voice.play();
+				var is_playFinish = setInterval(function(){
+					console.log(voice.ended);
+					if(voice.ended){
+						$(".load").hide();
+						console.log("结束");
+						$(".play-content div").hide();
+						$(".play").show();
+						window.clearInterval(is_playFinish);
+					}
+				}, 10);
+			}
+		})
+
+		$(".stop").on("click",function(){
+			if(voice)
+            {
+            	$(".play-content div").show();
+				$(this).hide();
+                voice.pause();
+            }
+		})
+	</script>
+
+	<script>
+		$(".submit-button").on("click",function(){
+			var $loadingEl = $.loading({
+                content:'正在提交...'
+            });
+			var data = {
+		      	phoneType : window.navigator.userAgent
+		      }
+			$.ajax({
+	          type : "POST",
+	          data: data,
+	          dataType: "json",
+	          url : "/feedback",
+	          success : function(result){
+	            // console.log(result);
+	            $loadingEl.loading("hide");
+	            $(".error-content").hide();
+	            $(".thanks-content").show();
+	          },
+	          error: function(error){
+	            // alert(error);
+	            $loadingEl.loading("hide");
+	            console.log(error);
+	            if(error.response == "220"){
+	            	$(".error-content").hide();
+	            	$(".thanks-content").show();
+	            }else{
+	            	cherry.tipShow("服务器异常");
+	            }
+	          }
+	        });
+		})
+		$("#share-tip-dialog").on("click",function(){
+			$("#share-tip-dialog").hide();
+		})
+	</script>
+</html>
