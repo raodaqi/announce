@@ -182,9 +182,11 @@ function getJWCImportentData(){
 	});
 }
 function getCUITImportentData(){
+	console.log("测试");
 	getUrlData("http://www.cuit.edu.cn/NewsList?id=2","UTF-8",{
 		success:function(result){
 			$ = cheerio.load(result);
+			console.log(result);
 			$("#NewsListContent li").each(function(i, elem){
 				if($(this).text()){
 						console.log($(this).children("a").text());
