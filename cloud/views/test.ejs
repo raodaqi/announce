@@ -1,0 +1,160 @@
+<% include header.ejs %>
+<style type="text/css">
+	body,html{
+		margin: 0;
+		padding:0;
+		height: 100%;
+		overflow: hidden !important;
+		background-color: white;
+	}
+	.content{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		bottom:0;
+		left: 0;
+		right:0;
+		background-color: #F58180;
+		overflow: hidden;
+	}
+	.text-content{
+		display: block;
+		border:0;
+		height: 100px;
+		font-size: 18px;
+		width: 100%;
+		position: absolute;
+		text-align: center;
+		top:50%;
+		margin: 0px;
+		margin-top: -100px;
+	}
+	.arrow{
+		background-image: url("./img/arrow.svg");
+		position:absolute;
+		width: 40px;
+		height:40px;
+		bottom:30px;
+		right:20px;
+	}
+	/****************反馈ui*******************/
+	.error-tip{
+		width: 80%;
+		color:white;
+		margin:40px auto;
+	}
+	.thanks-tip{
+		width: 80%;
+		text-align: center;
+		color:white;
+		margin:40% auto;
+	}
+	.error-input{
+		display: block;
+		border: 0;
+		border-radius: 4px;
+		width: 80%;
+		padding:10px 10px;
+		margin: 0 auto; 
+	}
+	.submit-button{
+		width: 60%;
+		padding:12px;
+		color: white;
+		margin: 100px auto;
+		text-align: center;
+		border-radius: 5px;
+		background-color: #5287E8;
+	}
+	.audio{
+		width: 40px;
+	}
+</style>
+<body>
+	<!-- <textarea class="text-content" placeholder="输入一段你想说的话..."></textarea>  -->
+	<div class="content">
+		<!-- <input type="text" class="text-content" placeholder="输入一段你想说的话..."> -->
+		<!-- <textarea class="text-content" placeholder="输入一段你想说的话..."></textarea>
+
+		<div class="arrow"></div> -->
+		<div class="error-content">
+			<div class="error-tip">
+				如果您的手机听不到声音，麻烦您填一下您的手机机型反馈给我们，谢谢。
+			</div>
+		</div>
+		<div class="thanks-content" style="display:none">
+			<div class="thanks-tip">
+				我们已经收到您的反馈，谢谢。
+			</div>
+		</div>
+		<audio src="/audio/voice.wav" class="audio" id="audio">
+		您的浏览器不支持 audio 标签。
+		</audio>
+
+
+	</div> 
+	
+
+<% include footer.ejs %>
+	<script type="text/javascript">
+		// audio = new Audio();
+  //       audio.src = '/audio/test.mp3';
+  
+  //       audio.play(); 
+  $(".error-tip").text(window.navigator.userAgent);
+  // $(".audio").attr("autoplay","autoplay");
+  // $(".audio").play();
+  // var audio = '<audio src="/audio/voice.wav" class="audio" controls="controls" autoplay="autoplay"></audio>';
+  // document.getElementById('audio').play();
+  console.log(audio.ended);
+  $(".content").on("click",function(){
+  	
+  	document.getElementById('audio').play();
+  	 console.log(audio.ended);
+  })
+  
+	</script>
+
+	<script type="text/javascript">
+		// cherry.play(content,vcn);
+	</script>
+
+	<script>
+		// $(".submit-button").on("click",function(){
+		// 	if(!$(".error-input").val()){
+		// 		cherry.tipShow("机型不能为空");
+		// 		return;
+		// 	}
+		// 	var $loadingEl = $.loading({
+  //               content:'正在提交...'
+  //           });
+		// 	var data = {
+		//       	phoneType : $(".error-input").val()
+		//       }
+		// 	$.ajax({
+	 //          type : "POST",
+	 //          data: data,
+	 //          dataType: "json",
+	 //          url : "/feedback",
+	 //          success : function(result){
+	 //            // console.log(result);
+	 //            $loadingEl.loading("hide");
+	 //            $(".error-content").hide();
+	 //            $(".thanks-content").show();
+	 //          },
+	 //          error: function(error){
+	 //            // alert(error);
+	 //            $loadingEl.loading("hide");
+	 //            console.log(error);
+	 //            if(error.response == "220"){
+	 //            	$(".error-content").hide();
+	 //            	$(".thanks-content").show();
+	 //            }else{
+	 //            	cherry.tipShow("服务器异常");
+	 //            }
+	 //          }
+	 //        });
+		// })	
+	</script>
+</html>
+

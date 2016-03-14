@@ -1,0 +1,184 @@
+<% include header.ejs %>
+<style type="text/css">
+	body,html{
+		margin: 0;
+		padding:0;
+		height: 100%;
+		background-color: white;
+	}
+	.content{
+		position: absolute;
+		width: 100%;
+		overflow-y: scroll;
+		left: 0;
+		right:0;
+		background-color: #F58180;
+	}
+	.announce-content{
+		bottom:0;
+		overflow-y: scroll !important;
+	}
+	.text-content{
+		display: block;
+		border:0;
+		height: 100px;
+		font-size: 18px;
+		width: 100%;
+
+		position: absolute;
+		text-align: center;
+		top:50%;
+		margin: 0px;
+		margin-top: -100px;
+	}
+	.arrow{
+		background-image: url("./img/arrow.svg");
+		position:absolute;
+		width: 40px;
+		height:40px;
+		bottom:30px;
+		right:20px;
+	}
+	/****************反馈ui*******************/
+	.error-tip{
+		width: 80%;
+		color:white;
+		margin:40px auto;
+	}
+	.thanks-tip{
+		width: 80%;
+		text-align: center;
+		color:white;
+		margin:40% auto;
+	}
+	.error-input{
+		display: block;
+		border: 0;
+		border-radius: 4px;
+		width: 80%;
+		padding:10px 10px;
+		margin: 0 auto;
+	}
+	.submit-button{
+		width: 60%;
+		padding:12px;
+		color: white;
+		margin: 50px auto;
+		text-align: center;
+		border-radius: 5px;
+		background-color: #5287E8;
+	}
+	#share-tip-dialog{
+		background: rgba(0, 0, 0, 0.8);
+	}
+	.share-tip-content{
+		width: 80%;
+		text-align: center;
+		color:white;
+		margin:40% auto;
+	}
+	.big{
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.small{
+		font-size: 10px;
+		color:#30B7F7;
+	}
+	.play-content{
+		width: 80px;
+		height: 80px;
+		margin:0 auto;
+		margin-top: 50px;
+		box-shadow: 0px 0px 20px #D8D8D8;
+    	border-radius: 10px;
+    	text-align: center;
+	}
+	.play,.stop{
+		width: 50px;
+		height: 50px;
+		margin:0 auto;
+		font-size: 40px;
+		color: white;
+		line-height: 80px;
+		text-align: center;
+	}
+	.play-active{
+		display: block;
+	}
+	.do{
+		position: fixed;
+		height: 50px;
+		color: white;
+		bottom: 0;
+		width: 100%;
+		line-height: 50px;
+		text-align: center;
+	}
+	.do{
+	    background: -moz-linear-gradient(top, #DB5957 0%, #EEA068 100%);
+	    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#DB5957), color-stop(100%,#EEA068));
+	    background: -webkit-linear-gradient(top, #DB5957 0%,#EEA068 100%);
+	    background: -o-linear-gradient(top, #DB5957 0%,#EEA068 100%);
+	    background: -ms-linear-gradient(top, #DB5957 0%,#EEA068 100%);
+	    background: linear-gradient(to bottom, #DB5957  0%,#EEA068  100%);
+	    opacity: 0.9;
+	}
+	.content{
+		background: url("/img/3-6-1.jpg");
+		background-size: cover;
+	}
+	.announce-ul{
+		width: 100%;
+		box-sizing: border-box;
+		/*padding:10px;*/
+	}
+	.announce-li{
+		/*width: 100%;*/
+		width: 90%;
+		background-color: white;
+		margin: 0 auto;
+		height: 90px;
+		margin-top: 10px;
+		border-radius: 5px;
+		border: 1px solid white;
+	}
+	.announce-time{
+		font-size: 12px;
+		padding-left: 20px;
+		color: #9E9A9A;
+	}
+	.announce-title{
+		padding:10px 0 5px 20px;
+		color: #000000;
+		font-weight: bold;
+		height: 45px;
+		overflow: hidden;
+		text-overflow:ellipsis;
+		/*white-space: nowrap;*/
+	}
+</style>
+<body>
+	<div class="content">
+		<div class="announce-content">
+			<div class="announce-ul">
+				<% for(var i = 0; i < results.length; i++){ %>
+					<a href="<%= results[i].attributes.url %>">
+						<div class="announce-li">
+							<div class="announce-title">
+									<%= results[i].attributes.title %>
+							</div>
+							<div class="announce-time">
+									<%= results[i].attributes.time %>
+							</div>
+						</div>
+					</a>
+				<% } %>
+			</div>
+		</div>
+	</div>
+
+<% include footer.ejs %>
+	<script type="text/javascript">
+	</script>
+</html>
