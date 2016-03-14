@@ -233,7 +233,7 @@ function getCUITImportentData(){
  }
 
 // getJWCImportentData();
-getCUITImportentData();
+// getCUITImportentData();
 
 // var url = "http://www1.cuit.edu.cn/NewsList.asp?bm=32&type=448";
 // http.get(url, function(res) {
