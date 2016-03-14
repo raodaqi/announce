@@ -225,8 +225,12 @@ function getCUITImportentData(){
 	getCUITImportentData();
  	getJWCImportentData();
  }
-
-// cronGetData();
+ exports.getCUITImportentData = function(){
+	getCUITImportentData();
+ }
+ exports.getJWCImportentData = function(){
+	getJWCImportentData();
+ }
 
 // getJWCImportentData();
 // getCUITImportentData();

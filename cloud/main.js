@@ -3,6 +3,8 @@ var appJs = require("cloud/app.js");
 // For example:
 AV.Cloud.define("getData", function(request, response) {
   console.log('Log in timer.');
-  appJs.cronGetData();
+  // appJs.cronGetData();
+  appJs.getCUITImportentData();
+  appJs.getJWCImportentData();
   response.success("Log in timer.");
 });
