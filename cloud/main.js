@@ -5,6 +5,6 @@ AV.Cloud.define("getData", function(request, response) {
   console.log('Log in timer.');
   // appJs.cronGetData();
   appJs.getCUITImportentData();
-  appJs.getJWCImportentData();
+  // appJs.getJWCImportentData();
   response.success("Log in timer.");
 });
