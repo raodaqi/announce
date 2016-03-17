@@ -120,6 +120,7 @@ function saveAnnounceData(data,find,callback){
 
 function getUrlData(url,charset,callback){
 	http.get(url, function(res) {
+		console.log(res);
 	    var source = "";
 			res.setEncoding('binary');
 	    res.on('data', function(data) {
