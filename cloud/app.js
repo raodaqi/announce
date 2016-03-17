@@ -117,10 +117,8 @@ function saveAnnounceData(data,find,callback){
 	// });
 // }
 
-
 function getUrlData(url,charset,callback){
 	http.get(url, function(res) {
-		console.log(res);
 	    var source = "";
 			res.setEncoding('binary');
 	    res.on('data', function(data) {
@@ -231,7 +229,41 @@ function getCUITImportentData(){
  	getJWCImportentData();
  }
  exports.getCUITImportentData = function(){
-	getCUITImportentData();
+	// getCUITImportentData();
+	AV.Cloud.httpRequest({
+	  url: 'http://www.cuit.edu.cn/NewsList?id=2',
+	  success: function(httpResponse) {
+			$ = cheerio.load(httpResponse.text);
+			$("#NewsListContent li").each(function(i, elem){
+				if($(this).text()){
+						console.log($(this).children("a").text());
+						var title = $(this).children("a").text();
+						var url = "http://www.cuit.edu.cn/"+$(this).children("a").attr("href");
+						var time = $(this).children(".datetime").text();
+						var type = 'CUIT';
+						time = time.replace("[","");
+						time = time.replace("]","");
+						var data = {};
+						data.time = time;
+						data.title = title;
+						data.url = url;
+						data.type = type;
+						console.log(data);
+						saveAnnounceData(data,"title",{
+							success:function(result){
+								console.log(result);
+							},
+							error:function(error){
+								console.log(error)
+							}
+						});
+				}
+			})
+	  },
+	  error: function(httpResponse) {
+	    console.error('Request failed with response code ' + httpResponse.status);
+	  }
+	});
  }
  exports.getJWCImportentData = function(){
 	getJWCImportentData();
