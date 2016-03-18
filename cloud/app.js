@@ -233,7 +233,7 @@ function getCUITImportentDataByAV(){
 	AV.Cloud.httpRequest({
 	  url: 'http://www.cuit.edu.cn/NewsList?id=2',
 		headers: {
-	    'Content-Type': 'application/json'
+	    'Host':'www.cuit.edu.cn'
 	  },
 	  success: function(httpResponse) {
 			console.log(httpResponse.text);
@@ -278,7 +278,7 @@ function getCUITImportentDataByAV(){
  }
 
 // getJWCImportentData();
-// getCUITImportentData();
+getCUITImportentData();
 
 // var url = "http://www1.cuit.edu.cn/NewsList.asp?bm=32&type=448";
 // http.get(url, function(res) {
