@@ -230,39 +230,42 @@ function getCUITImportentData(){
  }
 function getCUITImportentDataByAV(){
 	// getCUITImportentData();
+	console.log("ok");
 	AV.Cloud.httpRequest({
+	  // url: 'http://www.cuit.edu.cn/NewsList?id=2',
 	  url: 'http://www.cuit.edu.cn/NewsList?id=2',
 		headers: {
 	    'Host':'www.cuit.edu.cn'
 	  },
 	  success: function(httpResponse) {
+			console.log("success");
 			console.log(httpResponse.text);
-			$ = cheerio.load(httpResponse.text);
-			$("#NewsListContent li").each(function(i, elem){
-				if($(this).text()){
-						console.log($(this).children("a").text());
-						var title = $(this).children("a").text();
-						var url = "http://www.cuit.edu.cn/"+$(this).children("a").attr("href");
-						var time = $(this).children(".datetime").text();
-						var type = 'CUIT';
-						time = time.replace("[","");
-						time = time.replace("]","");
-						var data = {};
-						data.time = time;
-						data.title = title;
-						data.url = url;
-						data.type = type;
-						console.log(data);
-						saveAnnounceData(data,"title",{
-							success:function(result){
-								console.log(result);
-							},
-							error:function(error){
-								console.log(error)
-							}
-						});
-				}
-			})
+			// $ = cheerio.load(httpResponse.text);
+			// $("#NewsListContent li").each(function(i, elem){
+			// 	if($(this).text()){
+			// 			console.log($(this).children("a").text());
+			// 			var title = $(this).children("a").text();
+			// 			var url = "http://www.cuit.edu.cn/"+$(this).children("a").attr("href");
+			// 			var time = $(this).children(".datetime").text();
+			// 			var type = 'CUIT';
+			// 			time = time.replace("[","");
+			// 			time = time.replace("]","");
+			// 			var data = {};
+			// 			data.time = time;
+			// 			data.title = title;
+			// 			data.url = url;
+			// 			data.type = type;
+			// 			console.log(data);
+			// 			saveAnnounceData(data,"title",{
+			// 				success:function(result){
+			// 					console.log(result);
+			// 				},
+			// 				error:function(error){
+			// 					console.log(error)
+			// 				}
+			// 			});
+			// 	}
+			// })
 	  },
 	  error: function(httpResponse) {
 	    console.error('Request failed with response code ' + httpResponse.status);
@@ -278,7 +281,7 @@ function getCUITImportentDataByAV(){
  }
 
 // getJWCImportentData();
-getCUITImportentData();
+getCUITImportentDataByAV();
 
 // var url = "http://www1.cuit.edu.cn/NewsList.asp?bm=32&type=448";
 // http.get(url, function(res) {
