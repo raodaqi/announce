@@ -233,9 +233,9 @@ function getCUITImportentDataByAV(){
 	console.log("ok");
 	AV.Cloud.httpRequest({
 	  // url: 'http://www.cuit.edu.cn/NewsList?id=2',
-	  url: 'http://www.baidu.com',
+	  url: 'http://www.cuit.edu.cn',
 		headers: {
-	    'Host':'www.baidu.com'
+	    'Host':'www.cuit.edu.cn'
 	  },
 	  success: function(httpResponse) {
 			console.log("success");
