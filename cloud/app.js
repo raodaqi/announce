@@ -233,6 +233,7 @@ function getCUITImportentData(){
 	AV.Cloud.httpRequest({
 	  url: 'http://www.cuit.edu.cn/NewsList?id=2',
 	  success: function(httpResponse) {
+			console.log(httpResponse.text);
 			$ = cheerio.load(httpResponse.text);
 			$("#NewsListContent li").each(function(i, elem){
 				if($(this).text()){
