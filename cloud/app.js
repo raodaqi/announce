@@ -228,10 +228,13 @@ function getCUITImportentData(){
 	getCUITImportentData();
  	getJWCImportentData();
  }
- exports.getCUITImportentData = function(){
+function getCUITImportentDataByAV(){
 	// getCUITImportentData();
 	AV.Cloud.httpRequest({
 	  url: 'http://www.cuit.edu.cn/NewsList?id=2',
+		headers: {
+	    'Content-Type': 'application/json'
+	  },
 	  success: function(httpResponse) {
 			console.log(httpResponse.text);
 			$ = cheerio.load(httpResponse.text);
@@ -265,6 +268,10 @@ function getCUITImportentData(){
 	    console.error('Request failed with response code ' + httpResponse.status);
 	  }
 	});
+ }
+ // getCUITImportentDataByAV();
+ exports.getCUITImportentData = function(){
+	 getCUITImportentDataByAV();
  }
  exports.getJWCImportentData = function(){
 	getJWCImportentData();
