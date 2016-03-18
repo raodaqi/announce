@@ -232,8 +232,8 @@ function getCUITImportentDataByAV(){
 	// getCUITImportentData();
 	console.log("ok");
 	AV.Cloud.httpRequest({
-	  // url: 'http://www.cuit.edu.cn/NewsList?id=2',
-	  url: 'http://www.cuit.edu.cn',
+	  url: 'http://www.cuit.edu.cn/NewsList?id=2',
+	  // url: 'http://www.cuit.edu.cn',
 		headers: {
 	    'Host':'www.cuit.edu.cn'
 	  },
@@ -281,7 +281,19 @@ function getCUITImportentDataByAV(){
  }
 
 // getJWCImportentData();
-getCUITImportentDataByAV();
+// getCUITImportentDataByAV();
+
+//初始化并设置定时任务的时间
+// var rule = new schedule.RecurrenceRule();
+// rule.second  = 5;
+var rule = '0 0/1 9-23 * * ?'
+
+//处理要做的事情
+var j = schedule.scheduleJob(rule, function(){
+    // console.log('我在这里处理了某些事情...');
+    getCUITImportentData();
+});
+
 
 // var url = "http://www1.cuit.edu.cn/NewsList.asp?bm=32&type=448";
 // http.get(url, function(res) {
